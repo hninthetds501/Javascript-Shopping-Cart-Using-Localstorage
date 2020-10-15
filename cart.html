@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Shopping Cart</title>
+	
+</head>
+<body>
+	<h1><a href="shop.html">Go back to Pizza Shop</a></h1>
+	<table border="1px solid" cellpadding="10px" cellspacing="0px">
+		<thead>
+			<tr>
+				<th>No</th>
+				<th>Item</th>
+				<th>Item Name</th>
+				<th>Qty</th>
+				<th>Price</th>
+				<th>Total</th>
+				<th>Remove</th>
+			</tr>
+		</thead>
+		<tbody id="body">
+			
+		</tbody>
+	</table>
+</body>
+<script type="text/javascript">
+		showcart();
+
+		function change_qty(q){
+			var id=q.getAttribute('data-id');
+			var qty=q.value;
+			//console.log(id,qty);
+
+			var mycart=localStorage.getItem('cart');
+			var mycartObj=JSON.parse(mycart);
+
+			if(qty>0){
+				mycartObj.itemlist[id].qty=qty;
+				//console.log(mycartObj);
+			}
+			else{
+				var ans=confirm("Are you sure you want to delete");
+				//console.log(ans);
+				if (ans==true) {
+					mycartObj.itemlist.splice(id,1);
+				}
+			}
+			localStorage.setItem('cart',JSON.stringify(mycartObj));
+			showcart();
+		}
+
+		function btn_delete(d){
+			var id=d.getAttribute('data-id');
+			var mycart=localStorage.getItem('cart');
+			var mycartObj=JSON.parse(mycart);
+			var ans=confirm("Are you sure you want to delete");
+				//console.log(ans);
+				if (ans==true) {
+					mycartObj.itemlist.splice(id,1);
+				}
+				localStorage.setItem('cart',JSON.stringify(mycartObj));
+				showcart();
+		}
+
+		function showcart(){
+			var mycart=localStorage.getItem('cart');
+			var mycartObj=JSON.parse(mycart);
+			var j=1;
+			var total=0;
+			var html='';
+			mycartObj.itemlist.forEach(function(item,i){
+				var id=item.id;
+				var photo=item.photo;
+				var name=item.name;
+				var price=item.price;
+				var qty=item.qty;
+
+				var subtotal=price*qty;
+				total+=subtotal;
+
+				html+=`<tr>
+									<td>${j++}</td>
+									<td><img src='${photo}' width='150px' height='80px'></td>
+									<td>${name}</td>
+									<td><input type="number" onchange="change_qty(this)" value=${qty} data-id=${i}></td>
+									<td>${price}</td>
+									<td>${subtotal}</td>
+									<td><center><button onclick="btn_delete(this)" data-id=${i}>X</button></center></td>
+							</tr>`;
+			})
+			html+=`<tr>
+							<td colspan="5">Total</td>
+							<td>${total}</td>
+							<td></td>
+						</tr>`;
+			document.getElementById('body').innerHTML=html;
+			//console.log(html);
+		}
+	</script>
+</html>

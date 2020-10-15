@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>shopping cart</title>
+</head>
+<body>
+	<h1>Pizza shop </h1>
+	<h2><a href="cart.html">Your Cart </a><span id="count" style="color: red"></span></h2>
+	<table border="1px solid" cellpadding="15">
+		<tbody>
+			<tr>
+				<td>
+					<img src="p1.jpg" class="p1" width="250px" height="200px">
+					<br>
+					<h3>Pizza 1</h3>
+					<h3>Price: 10000</h3>
+					<button onclick="add_item(this)"  data-id="1" data-name="Pizza 1" data-price="10000" data-photo="p1.jpg">Add to cart</button>
+				</td>
+				<td>
+					<img src="p2.jpg" class="p2" width="250px" height="200px">
+					<br>
+					<h3>Pizza 2</h3>
+					<h3>Price: 12000</h3>
+					<button onclick="add_item(this)" data-id="2" data-name="Pizza 2" data-price="12000" data-photo="p2.jpg">Add to cart</button>
+				</td>
+				<td>
+					<img src="p3.jpg" class="p3" width="250px" height="200px">
+					<br>
+					<h3>Pizza 3</h3>
+					<h3>Price: 12000</h3>
+					<button onclick="add_item(this)" data-id="3" data-name="Pizza 3" data-price="12000" data-photo="p3.jpg">Add to cart</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+<script type="text/javascript">
+	count_item();
+	function count_item(){
+		var mycart=localStorage.getItem('cart');
+		var mycartObj=JSON.parse(mycart);
+		//console.log(typeof(mycartObj));
+		var total=0;
+		mycartObj.itemlist.forEach(function(v){
+			total+=parseInt(v.qty);
+		})
+		document.getElementById('count').innerHTML="["+total+"]";
+	}
+	function add_item(b){
+		//console.log(b);
+		var id=b.getAttribute('data-id');
+		var name=b.getAttribute('data-name');
+		var price=b.getAttribute('data-price');
+		var photo=b.getAttribute('data-photo');
+
+		//console.log(id,name,price,photo);
+
+		var item={
+			id:id,
+			name:name,
+			price:price,
+			photo:photo,
+			qty:1
+		};
+		//console.log(item);
+
+		// accessing data from browser localstorage object by using getitem
+		var cart=localStorage.getItem('cart');
+		// console.log(typeof(cart));
+		if(!cart){
+			cart='{"itemlist":[]}';
+		}
+		
+		var cartObj=JSON.parse(cart);
+		var hasid=false;
+
+		cartObj.itemlist.forEach(function(v){
+				if(v.id==id){
+					hasid="true";
+					v.qty++;
+				}
+			})
+			if(!hasid){
+				cartObj.itemlist.push(item);
+			}
+			 localStorage.setItem('cart',JSON.stringify(cartObj));
+			console.log(cartObj);
+			count_item();
+		}
+
+	// Without Callback	
+	// function cons(item){
+	// 	if(item.id==id){
+	// 		hasid=true;
+	// 		item.qty++;
+			
+	// 	}
+	// }
+	// for(i=0;i<cartObj.itemlist.length;i++){
+	// 	cons(cartObj.itemlist[i]);
+	// }
+
+</script>
+</html>
